@@ -1,0 +1,69 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>eu.lindenbaum.thirdparty</groupId>
+  <artifactId>proper</artifactId>
+  <version>1.1.0-SNAPSHOT</version>
+  <packaging>erlang-std</packaging>
+  <name>PropEr</name>
+  <description>A QuickCheck-inspired property-based testing tool for Erlang.</description>
+  <scm>
+    <connection>scm:git:https://github.com/i11/proper.git</connection>
+    <developerConnection>scm:git:https://github.com/i11/proper.git</developerConnection>
+    <url>scm:git:https://github.com/i11/proper.git</url>
+  </scm>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <executions>
+          <execution>
+            <id>generate-compile-flags-include</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <executable>./write_compile_flags</executable>
+              <workingDirectory>${basedir}</workingDirectory>
+              <arguments>
+                <argument>include/compile_flags.hrl</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>eu.lindenbaum</groupId>
+        <artifactId>maven-erlang-plugin</artifactId>
+        <!-- export_all should not be used for test compilation -->
+        <version>2.3.0-SNAPSHOT</version>
+        <extensions>true</extensions>
+        <configuration>
+          <skipDialyzer>true</skipDialyzer>
+          <compileFirst>
+            <file>strip_types.erl</file>
+            <file>vararg.erl</file>
+          </compileFirst>
+          <testCompileFirst>
+            <file>strip_types.erl</file>
+            <file>vararg.erl</file>
+            <file>proper_transformer.erl</file>
+            <file>proper_prop_remover.erl</file>
+            <file>proper_typeserver.erl</file>
+          </testCompileFirst>
+          <compilerOptions>report_warnings, {warn_format,1},
+            warn_export_vars,
+            warn_obsolete_guard, warn_unused_import,
+            warn_missing_spec, warn_untyped_record</compilerOptions>
+          <testCompilerOptions>report_warnings, {warn_format,1},
+            warn_export_vars,
+            warn_obsolete_guard, warn_unused_import,
+            warn_missing_spec, warn_untyped_record, return, {d,'PROPER'}</testCompilerOptions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

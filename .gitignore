@@ -1,6 +1,5 @@
 *~
 \#*\#
-*.app
 *.beam
 *.dump
 *.tar.gz
@@ -12,3 +11,6 @@ doc/edoc-info
 include/compile_flags.hrl
 .directory
 .eunit
+.project
+.settings
+target
